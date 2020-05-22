@@ -23,6 +23,8 @@ class CPU:
         self.ADD = 0b10100000
         self.CMP = 0b10100111
         self.JMP = 0b01010100
+        self.JEQ = 0b01010101
+        self.JNE = 0b01010110
 
     def load(self, filename):
         """Load a program into memory."""
@@ -134,8 +136,7 @@ class CPU:
                 # print(self.pc, self.reg, self.ram)
                 self.pc += 3
             elif IR == self.PRN:
-                value = int(self.reg[operand_a])
-                print(f'{value}')
+                print(self.reg[operand_a])
                 self.pc += 2
             elif IR == self.MUL:
                 self.alu(IR, operand_a, operand_b)
@@ -170,6 +171,18 @@ class CPU:
             # Set the PC to the address stored in the given register.
             elif IR == self.JMP:
                 self.pc = self.reg[operand_a]
+            # If equal flag is set (true), jump to the address stored in the given register.
+            elif IR == self.JEQ:
+                if self.flag['E'] == 1:
+                    self.pc = self.reg[operand_a]
+                else:
+                    self.pc += 2
+            # If E flag is clear (false, 0), jump to the address stored in the given register.
+            elif IR == self.JNE:
+                if self.flag['E'] == 0:
+                    self.pc = self.reg[operand_a]
+                else:
+                    self.pc += 2
             elif IR == self.HLT:
                 sys.exit(0)
             else:
