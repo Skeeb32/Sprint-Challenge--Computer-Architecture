@@ -22,6 +22,7 @@ class CPU:
         self.RET = 0b00010001
         self.ADD = 0b10100000
         self.CMP = 0b10100111
+        self.JMP = 0b01010100
 
     def load(self, filename):
         """Load a program into memory."""
@@ -165,7 +166,11 @@ class CPU:
             elif IR == self.CMP:
                 self.alu(self.CMP, operand_a, operand_b)
                 self.pc += 3
-            elif opcode == self.HLT:
+            # Jump to the address stored in the given register.
+            # Set the PC to the address stored in the given register.
+            elif IR == self.JMP:
+                self.pc = self.reg[operand_a]
+            elif IR == self.HLT:
                 sys.exit(0)
             else:
                 print(f"Did not work")
